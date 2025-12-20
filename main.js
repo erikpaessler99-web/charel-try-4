@@ -85,6 +85,24 @@ class Game {
     // Enable first-person mode
     this.playerController.setCameraMode('first-person');
     this.cameraController.enable();
+    
+    // Add E key listener for door interaction
+    this.setupKeyListeners();
+  }
+  
+  setupKeyListeners() {
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'e' || e.key === 'E') {
+        this.handleDoorInteraction();
+      }
+    });
+  }
+  
+  handleDoorInteraction() {
+    // Check if near door and all artifacts collected
+    if (this.levelComplete && this.room.checkExitCollision(this.player.position)) {
+      this.ui.showPasswordModal();
+    }
   }
   
   setupWorld() {
@@ -115,18 +133,18 @@ class Game {
     const avatarCount = CONFIG.AVATAR_COUNT;
     
     // Create clusters of dancers
-    const clusterCount = 8;
+    const clusterCount = 15;
     const avatarsPerCluster = Math.floor(avatarCount / clusterCount);
     
     for (let cluster = 0; cluster < clusterCount; cluster++) {
       // Random cluster center
-      const clusterX = (Math.random() - 0.5) * danceFloorWidth * 0.8;
-      const clusterZ = (Math.random() - 0.5) * danceFloorDepth * 0.8 - 5;
+      const clusterX = (Math.random() - 0.5) * danceFloorWidth * 0.9;
+      const clusterZ = (Math.random() - 0.5) * danceFloorDepth * 0.9 - 5;
       
       for (let i = 0; i < avatarsPerCluster; i++) {
         // Spread around cluster center
         const angle = Math.random() * Math.PI * 2;
-        const radius = Math.random() * 5 + 1;
+        const radius = Math.random() * 3 + 0.5;
         
         const x = clusterX + Math.cos(angle) * radius;
         const z = clusterZ + Math.sin(angle) * radius;
@@ -160,7 +178,7 @@ class Game {
   }
   
   createArtifacts() {
-    // Place artifacts at various heights throughout the crowd
+    // Place artifacts at head level throughout the crowd
     const danceFloorWidth = CONFIG.ROOM_WIDTH - 10;
     const danceFloorDepth = CONFIG.ROOM_DEPTH - 15;
     
@@ -169,16 +187,8 @@ class Game {
       const x = (Math.random() - 0.5) * danceFloorWidth;
       const z = (Math.random() - 0.5) * danceFloorDepth - 5;
       
-      // Vary the height - some at head level, some higher
-      const heightVariation = Math.random();
-      let y;
-      if (heightVariation < 0.3) {
-        y = 1.2 + Math.random() * 0.5; // Head level
-      } else if (heightVariation < 0.7) {
-        y = 2.5 + Math.random() * 1; // Above crowd
-      } else {
-        y = 4 + Math.random() * 2; // High up
-      }
+      // Keep artifacts at head level (1.3-2.0m)
+      const y = 1.3 + Math.random() * 0.7;
       
       const artifact = new Artifact(
         this.scene, 
@@ -226,6 +236,8 @@ class Game {
         collectedCount++;
       } else if (artifact.checkCollision(this.player.position)) {
         collectedCount++;
+        // Show collection message
+        this.ui.showCollectionMessage(collectedCount - 1);
       }
     }
     
@@ -239,17 +251,9 @@ class Game {
   }
   
   checkExitCollision() {
-    if (!this.levelComplete || this.transitioning) return;
-    
-    if (this.room.checkExitCollision(this.player.position)) {
-      this.transitioning = true;
-      this.ui.showLevelComplete();
-      
-      // Fade to white and reset after delay
-      setTimeout(() => {
-        this.resetLevel();
-      }, 2000);
-    }
+    // Door interaction is now handled by E key press
+    // This method is kept for compatibility but doesn't auto-redirect
+    return false;
   }
   
   resetLevel() {
