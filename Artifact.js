@@ -20,8 +20,8 @@ export class Artifact {
     ];
     const color = colorOptions[Math.floor(Math.random() * colorOptions.length)];
     
-    // Main crystal shape - icosahedron for more detail
-    const geometry = new THREE.IcosahedronGeometry(0.25, 1);
+    // Main crystal shape - small and subtle
+    const geometry = new THREE.IcosahedronGeometry(0.15, 1);
     const material = new THREE.MeshStandardMaterial({
       color: color,
       emissive: color,
@@ -36,7 +36,7 @@ export class Artifact {
     this.group.add(this.crystal);
     
     // Inner core
-    const coreGeometry = new THREE.IcosahedronGeometry(0.15, 0);
+    const coreGeometry = new THREE.IcosahedronGeometry(0.08, 0);
     const coreMaterial = new THREE.MeshBasicMaterial({
       color: color,
       transparent: true,
@@ -46,10 +46,10 @@ export class Artifact {
     this.core = new THREE.Mesh(coreGeometry, coreMaterial);
     this.group.add(this.core);
     
-    // Outer glow rings - multiple for depth
+    // Outer glow rings - smaller
     const rings = [];
     for (let i = 0; i < 3; i++) {
-      const ringGeometry = new THREE.TorusGeometry(0.35 + i * 0.08, 0.02, 8, 16);
+      const ringGeometry = new THREE.TorusGeometry(0.2 + i * 0.04, 0.015, 8, 16);
       const ringMaterial = new THREE.MeshBasicMaterial({
         color: color,
         transparent: true,
@@ -67,12 +67,12 @@ export class Artifact {
     // Particle system around artifact
     this.createParticles(color);
     
-    // Point light for strong glow effect
-    this.light = new THREE.PointLight(color, 2, 6);
+    // Point light for glow effect
+    this.light = new THREE.PointLight(color, 1.5, 4);
     this.group.add(this.light);
     
-    // Outer glow sphere
-    const glowGeometry = new THREE.SphereGeometry(0.6, 16, 16);
+    // Outer glow sphere - small
+    const glowGeometry = new THREE.SphereGeometry(0.35, 16, 16);
     const glowMaterial = new THREE.MeshBasicMaterial({
       color: color,
       transparent: true,
@@ -89,7 +89,7 @@ export class Artifact {
   }
   
   createParticles(color) {
-    const particleCount = 15;
+    const particleCount = 12;
     const geometry = new THREE.BufferGeometry();
     const positions = [];
     const velocities = [];
@@ -97,7 +97,7 @@ export class Artifact {
     for (let i = 0; i < particleCount; i++) {
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.random() * Math.PI;
-      const radius = 0.4;
+      const radius = 0.25;
       
       positions.push(
         Math.sin(phi) * Math.cos(theta) * radius,
@@ -106,19 +106,19 @@ export class Artifact {
       );
       
       velocities.push(
-        (Math.random() - 0.5) * 0.01,
-        (Math.random() - 0.5) * 0.01,
-        (Math.random() - 0.5) * 0.01
+        (Math.random() - 0.5) * 0.008,
+        (Math.random() - 0.5) * 0.008,
+        (Math.random() - 0.5) * 0.008
       );
     }
     
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     
     const material = new THREE.PointsMaterial({
-      size: 0.04,
+      size: 0.025,
       color: color,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.7,
       blending: THREE.AdditiveBlending,
       sizeAttenuation: true
     });
@@ -171,12 +171,12 @@ export class Artifact {
           positions[i + 1] ** 2 + 
           positions[i + 2] ** 2
         );
-        if (dist > 0.7) {
+        if (dist > 0.4) {
           const theta = Math.random() * Math.PI * 2;
           const phi = Math.random() * Math.PI;
-          positions[i] = Math.sin(phi) * Math.cos(theta) * 0.3;
-          positions[i + 1] = Math.sin(phi) * Math.sin(theta) * 0.3;
-          positions[i + 2] = Math.cos(phi) * 0.3;
+          positions[i] = Math.sin(phi) * Math.cos(theta) * 0.2;
+          positions[i + 1] = Math.sin(phi) * Math.sin(theta) * 0.2;
+          positions[i + 2] = Math.cos(phi) * 0.2;
         }
       }
       this.particles.geometry.attributes.position.needsUpdate = true;
