@@ -26,12 +26,12 @@ class Game {
   setupScene() {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x0a0014);
-    this.scene.fog = new THREE.Fog(0x0a0014, 10, 50);
+    this.scene.fog = new THREE.FogExp2(0x0a0014, 0.025);
   }
   
   setupCamera() {
     this.camera = new THREE.PerspectiveCamera(
-      75,
+      80, // Wider FOV for immersion
       window.innerWidth / window.innerHeight,
       0.1,
       1000
@@ -41,7 +41,9 @@ class Game {
   setupRenderer() {
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     document.body.appendChild(this.renderer.domElement);
     
     window.addEventListener('resize', () => {
@@ -52,20 +54,20 @@ class Game {
   }
   
   setupPlayer() {
-    // Create invisible player object (camera will be at its position)
-    const playerGeometry = new THREE.BoxGeometry(1, 2, 1);
+    // Create invisible player object
+    const playerGeometry = new THREE.BoxGeometry(0.6, 1.7, 0.6);
     const playerMaterial = new THREE.MeshBasicMaterial({ 
       color: 0xff0000,
       visible: false 
     });
     this.player = new THREE.Mesh(playerGeometry, playerMaterial);
-    this.player.position.set(0, CONFIG.PLAYER_EYE_HEIGHT, CONFIG.ROOM_DEPTH / 2 - 5);
+    this.player.position.set(0, CONFIG.PLAYER_EYE_HEIGHT, CONFIG.ROOM_DEPTH / 2 - 8);
     this.scene.add(this.player);
     
     // Setup controllers
     this.playerController = new PlayerController(this.player, {
       moveSpeed: CONFIG.PLAYER_MOVE_SPEED,
-      jumpForce: 0, // No jumping in this game
+      jumpForce: 0,
       gravity: 0,
       groundLevel: CONFIG.PLAYER_EYE_HEIGHT
     });
@@ -75,7 +77,7 @@ class Game {
       this.player,
       this.renderer.domElement,
       {
-        eyeHeight: 0, // Camera is already at player height
+        eyeHeight: 0,
         mouseSensitivity: 0.002
       }
     );
@@ -89,49 +91,101 @@ class Game {
     // Create room
     this.room = new Room(this.scene);
     
-    // Create avatars (dancing crowd)
+    // Create avatars spread throughout the entire dance floor
     this.avatars = [];
-    const spacing = 4;
-    const rows = 5;
-    const cols = 6;
-    const startX = -(cols - 1) * spacing / 2;
-    const startZ = -CONFIG.ROOM_DEPTH / 2 + 10;
+    this.createCrowd();
     
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        const x = startX + col * spacing + (Math.random() - 0.5) * 2;
-        const z = startZ + row * spacing + (Math.random() - 0.5) * 2;
+    // Create DJ at the back
+    this.dj = new Avatar(
+      this.scene,
+      new THREE.Vector3(0, 0, -CONFIG.ROOM_DEPTH / 2 + 3),
+      true
+    );
+    this.avatars.push(this.dj);
+    
+    // Create artifacts scattered among the crowd
+    this.artifacts = [];
+    this.createArtifacts();
+  }
+  
+  createCrowd() {
+    // Create a more natural, spread-out crowd
+    const danceFloorWidth = CONFIG.ROOM_WIDTH - 10;
+    const danceFloorDepth = CONFIG.ROOM_DEPTH - 15;
+    const avatarCount = CONFIG.AVATAR_COUNT;
+    
+    // Create clusters of dancers
+    const clusterCount = 8;
+    const avatarsPerCluster = Math.floor(avatarCount / clusterCount);
+    
+    for (let cluster = 0; cluster < clusterCount; cluster++) {
+      // Random cluster center
+      const clusterX = (Math.random() - 0.5) * danceFloorWidth * 0.8;
+      const clusterZ = (Math.random() - 0.5) * danceFloorDepth * 0.8 - 5;
+      
+      for (let i = 0; i < avatarsPerCluster; i++) {
+        // Spread around cluster center
+        const angle = Math.random() * Math.PI * 2;
+        const radius = Math.random() * 5 + 1;
+        
+        const x = clusterX + Math.cos(angle) * radius;
+        const z = clusterZ + Math.sin(angle) * radius;
+        
+        // Keep within bounds
+        const boundedX = Math.max(-danceFloorWidth/2, Math.min(danceFloorWidth/2, x));
+        const boundedZ = Math.max(-danceFloorDepth/2, Math.min(danceFloorDepth/2, z));
+        
         const avatar = new Avatar(
           this.scene,
-          new THREE.Vector3(x, 0, z),
+          new THREE.Vector3(boundedX, 0, boundedZ),
           false
         );
         this.avatars.push(avatar);
       }
     }
     
-    // Create DJ at the back
-    this.dj = new Avatar(
-      this.scene,
-      new THREE.Vector3(0, 0, -CONFIG.ROOM_DEPTH / 2 + 2),
-      true
-    );
-    this.avatars.push(this.dj);
+    // Add remaining avatars randomly
+    const remaining = avatarCount - (avatarsPerCluster * clusterCount);
+    for (let i = 0; i < remaining; i++) {
+      const x = (Math.random() - 0.5) * danceFloorWidth;
+      const z = (Math.random() - 0.5) * danceFloorDepth - 5;
+      
+      const avatar = new Avatar(
+        this.scene,
+        new THREE.Vector3(x, 0, z),
+        false
+      );
+      this.avatars.push(avatar);
+    }
+  }
+  
+  createArtifacts() {
+    // Place artifacts at various heights throughout the crowd
+    const danceFloorWidth = CONFIG.ROOM_WIDTH - 10;
+    const danceFloorDepth = CONFIG.ROOM_DEPTH - 15;
     
-    // Create artifacts scattered around the room
-    this.artifacts = [];
-    const artifactPositions = [
-      new THREE.Vector3(-15, 2, -10),
-      new THREE.Vector3(15, 2, -5),
-      new THREE.Vector3(-10, 2, 5),
-      new THREE.Vector3(10, 2, 10),
-      new THREE.Vector3(0, 2, -25)
-    ];
-    
-    artifactPositions.forEach(pos => {
-      const artifact = new Artifact(this.scene, pos);
+    for (let i = 0; i < CONFIG.ARTIFACT_COUNT; i++) {
+      // Random position across the dance floor
+      const x = (Math.random() - 0.5) * danceFloorWidth;
+      const z = (Math.random() - 0.5) * danceFloorDepth - 5;
+      
+      // Vary the height - some at head level, some higher
+      const heightVariation = Math.random();
+      let y;
+      if (heightVariation < 0.3) {
+        y = 1.2 + Math.random() * 0.5; // Head level
+      } else if (heightVariation < 0.7) {
+        y = 2.5 + Math.random() * 1; // Above crowd
+      } else {
+        y = 4 + Math.random() * 2; // High up
+      }
+      
+      const artifact = new Artifact(
+        this.scene, 
+        new THREE.Vector3(x, y, z)
+      );
       this.artifacts.push(artifact);
-    });
+    }
   }
   
   setupUI() {
@@ -142,6 +196,7 @@ class Game {
   checkAvatarCollisions() {
     // Check distance to all avatars and slow player if close
     let nearAvatar = false;
+    let closestDistance = Infinity;
     
     for (const avatar of this.avatars) {
       const avatarPos = avatar.getPosition();
@@ -151,18 +206,16 @@ class Game {
         playerPos.z - avatarPos.z
       ).length();
       
+      closestDistance = Math.min(closestDistance, distance);
+      
       if (distance < CONFIG.SLOW_RADIUS) {
         nearAvatar = true;
-        break;
       }
     }
     
-    // Adjust player speed based on proximity to avatars
-    if (nearAvatar) {
-      this.playerController.moveSpeed = CONFIG.PLAYER_SLOWED_SPEED;
-    } else {
-      this.playerController.moveSpeed = CONFIG.PLAYER_MOVE_SPEED;
-    }
+    // Gradual speed adjustment based on proximity
+    const targetSpeed = nearAvatar ? CONFIG.PLAYER_SLOWED_SPEED : CONFIG.PLAYER_MOVE_SPEED;
+    this.playerController.moveSpeed += (targetSpeed - this.playerController.moveSpeed) * 0.1;
   }
   
   checkArtifactCollection() {
@@ -201,7 +254,7 @@ class Game {
   
   resetLevel() {
     // Reset player position
-    this.player.position.set(0, CONFIG.PLAYER_EYE_HEIGHT, CONFIG.ROOM_DEPTH / 2 - 5);
+    this.player.position.set(0, CONFIG.PLAYER_EYE_HEIGHT, CONFIG.ROOM_DEPTH / 2 - 8);
     
     // Remove old artifacts
     this.artifacts.forEach(artifact => {
@@ -210,20 +263,9 @@ class Game {
       }
     });
     
-    // Create new artifacts in different positions
+    // Create new artifacts
     this.artifacts = [];
-    const newPositions = [
-      new THREE.Vector3(-12, 2, -15),
-      new THREE.Vector3(18, 2, -8),
-      new THREE.Vector3(-8, 2, 3),
-      new THREE.Vector3(12, 2, 12),
-      new THREE.Vector3(5, 2, -20)
-    ];
-    
-    newPositions.forEach(pos => {
-      const artifact = new Artifact(this.scene, pos);
-      this.artifacts.push(artifact);
-    });
+    this.createArtifacts();
     
     // Hide exit door
     this.room.exitDoor.visible = false;
