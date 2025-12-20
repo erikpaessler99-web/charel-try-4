@@ -77,7 +77,7 @@ class Game {
       this.player,
       this.renderer.domElement,
       {
-        eyeHeight: 0,
+        eyeHeight: 1.35, // Shoulder level - below avatar heads (~1.5m) for crowd navigation feel
         mouseSensitivity: 0.002
       }
     );
