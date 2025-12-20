@@ -39,4 +39,3 @@ export const CONFIG = {
     0x0080ff  // Blue
   ]
 };
-
