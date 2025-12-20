@@ -8,7 +8,7 @@ export class Avatar {
     this.timeOffset = Math.random() * Math.PI * 2;
     
     // Create avatar mesh - realistic human proportions
-    const bodyHeight = isDJ ? 1.8 : (1.6 + Math.random() * 0.25); // 1.6-1.85m tall
+    const bodyHeight = isDJ ? 4.5 : (4.0 + Math.random() * 0.625); // 2.5x taller: 4.0-4.625m tall
     const bodyWidth = isDJ ? 0.5 : (0.4 + Math.random() * 0.1);
     
     this.group = new THREE.Group();
