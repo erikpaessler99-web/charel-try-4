@@ -12,7 +12,7 @@ export const CONFIG = {
   ROOM_HEIGHT: 15,
   
   // Avatar settings
-  AVATAR_COUNT: 45, // More avatars for crowded feel
+  AVATAR_COUNT: 120, // Packed club feel
   AVATAR_BOUNCE_SPEED: 1.8,
   AVATAR_SWAY_SPEED: 1.2,
   AVATAR_BOUNCE_HEIGHT: 0.15, // More subtle, realistic bounce
@@ -20,7 +20,7 @@ export const CONFIG = {
   AVATAR_SCALE: 1.0, // Human-sized avatars
   
   // Collectible settings
-  ARTIFACT_COUNT: 5,
+  ARTIFACT_COUNT: 6,
   ARTIFACT_COLLECT_RADIUS: 2.5,
   ARTIFACT_ROTATION_SPEED: 1.5,
   ARTIFACT_FLOAT_SPEED: 1.2,
