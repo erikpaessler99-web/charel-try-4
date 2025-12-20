@@ -8,7 +8,8 @@ export class Avatar {
     this.timeOffset = Math.random() * Math.PI * 2;
     
     // Create avatar mesh - realistic human proportions
-    const bodyHeight = isDJ ? 4.5 : (4.0 + Math.random() * 0.625); // 2.5x taller: 4.0-4.625m tall
+    // Player eye is at 1.65m, so avatars should be 1.6-1.8m tall (normal human height)
+    const bodyHeight = isDJ ? 1.75 : (1.6 + Math.random() * 0.2); // 1.6-1.8m tall
     const bodyWidth = isDJ ? 0.5 : (0.4 + Math.random() * 0.1);
     
     this.group = new THREE.Group();
