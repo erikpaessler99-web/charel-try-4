@@ -61,7 +61,7 @@ class Game {
       visible: false 
     });
     this.player = new THREE.Mesh(playerGeometry, playerMaterial);
-    this.player.position.set(0, CONFIG.PLAYER_EYE_HEIGHT, CONFIG.ROOM_DEPTH / 2 - 8);
+    this.player.position.set(0, 0.85, CONFIG.ROOM_DEPTH / 2 - 8); // Much lower y position
     this.scene.add(this.player);
     
     // Setup controllers
@@ -69,7 +69,7 @@ class Game {
       moveSpeed: CONFIG.PLAYER_MOVE_SPEED,
       jumpForce: 0,
       gravity: 0,
-      groundLevel: CONFIG.PLAYER_EYE_HEIGHT
+      groundLevel: 0.85 // Match the lower y position
     });
     
     this.cameraController = new FirstPersonCameraController(
@@ -258,7 +258,7 @@ class Game {
   
   resetLevel() {
     // Reset player position
-    this.player.position.set(0, CONFIG.PLAYER_EYE_HEIGHT, CONFIG.ROOM_DEPTH / 2 - 8);
+    this.player.position.set(0, 0.85, CONFIG.ROOM_DEPTH / 2 - 8); // Match lower y position
     
     // Remove old artifacts
     this.artifacts.forEach(artifact => {
