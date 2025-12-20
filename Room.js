@@ -87,7 +87,7 @@ export class Room {
     const frameMaterial = new THREE.MeshStandardMaterial({
       color: 0x00ff00,
       emissive: 0x00ff00,
-      emissiveIntensity: 0,
+      emissiveIntensity: 0.3,
       metalness: 0.9,
       roughness: 0.1
     });
@@ -99,7 +99,7 @@ export class Room {
     const doorMaterial = new THREE.MeshStandardMaterial({
       color: 0x002200,
       emissive: 0x00ff00,
-      emissiveIntensity: 0,
+      emissiveIntensity: 0.1,
       metalness: 0.7,
       roughness: 0.3
     });
@@ -109,7 +109,7 @@ export class Room {
     
     // Position at front wall
     doorGroup.position.set(0, 3.5, CONFIG.ROOM_DEPTH / 2 - 0.6);
-    doorGroup.visible = false;
+    doorGroup.visible = true; // Always visible now
     
     this.exitDoor = doorGroup;
     this.doorFrame = doorFrame;
@@ -290,7 +290,7 @@ export class Room {
   
   showExitDoor() {
     this.exitDoor.visible = true;
-    // Animate door appearance
+    // Animate door appearance - make it glow brighter
     this.doorFrame.material.emissiveIntensity = 0.8;
     this.door.material.emissiveIntensity = 0.4;
   }
