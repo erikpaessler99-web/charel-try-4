@@ -4,12 +4,12 @@ export class UI {
     this.artifactsCollected = 0;
     this.totalArtifacts = 6;
     this.collectionMessages = [
-      "The beat drops harder...",
-      "Energy surges through the crowd!",
-      "The lights pulse with new intensity!",
-      "You feel the music deeper...",
-      "The vibe is transcendent!",
-      "One with the rhythm!"
+      "Ui, ui! Ist das Sisyphos heute gut gefüllt.",
+      "Hier steppt der Bär!",
+      "Ich muss mal aufs Klo. Ich komm gleich wieder.",
+      "Kippe?",
+      "Willst du ne Pommes?",
+      "Wäre es eigentlich voll cringe wenn ich dich jetzt küssen würde?"
     ];
   }
   
@@ -41,7 +41,7 @@ export class UI {
     // Instructions
     const instructions = document.createElement('div');
     instructions.id = 'instructions';
-    instructions.innerHTML = 'WASD to Move | Mouse to Look | Click to Lock Pointer<br>Collect all artifacts to unlock the exit';
+    instructions.innerHTML = 'WASD und Touchpad zum bewegen, Maus / Swipe um dich umzuschauen. <br>Sammel alle Artifakte ein!';
     document.body.appendChild(instructions);
     
     // Password modal
@@ -168,3 +168,4 @@ export class UI {
     }
   }
 }
+
