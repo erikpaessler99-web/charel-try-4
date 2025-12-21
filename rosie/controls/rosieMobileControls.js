@@ -1,4 +1,4 @@
-// rosieMobileControls.js - Mobile controls stub
+// rosieMobileControls.js - Mobile controls with interaction button
 
 export class MobileControls {
   constructor(playerController) {
@@ -60,33 +60,34 @@ export class MobileControls {
     joystick.appendChild(knob);
     container.appendChild(joystick);
     
-    // Jump button
-    const jumpBtn = document.createElement('div');
-    jumpBtn.id = 'jump-button';
-    jumpBtn.style.cssText = `
+    // Interaction button (E key)
+    const interactBtn = document.createElement('div');
+    interactBtn.id = 'interact-button';
+    interactBtn.style.cssText = `
       position: absolute;
       bottom: 60px;
       right: 60px;
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      background: rgba(100,200,255,0.4);
-      border: 2px solid rgba(100,200,255,0.6);
+      background: rgba(78,205,196,0.4);
+      border: 2px solid rgba(78,205,196,0.6);
       pointer-events: auto;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 24px;
       color: white;
+      font-family: 'Orbitron', sans-serif;
     `;
-    jumpBtn.textContent = '⬆';
-    container.appendChild(jumpBtn);
+    interactBtn.textContent = 'E';
+    container.appendChild(interactBtn);
     
     document.body.appendChild(container);
     
     // Joystick logic
     this.setupJoystick(joystick, knob);
-    this.setupJumpButton(jumpBtn);
+    this.setupInteractButton(interactBtn);
   }
   
   setupJoystick(joystick, knob) {
@@ -144,15 +145,17 @@ export class MobileControls {
     document.addEventListener('mouseup', handleEnd);
   }
   
-  setupJumpButton(btn) {
+  setupInteractButton(btn) {
     btn.addEventListener('touchstart', (e) => {
       e.preventDefault();
-      this.playerController.keys['Space'] = true;
+      this.playerController.keys['KeyE'] = true;
+      // Dispatch E key event
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'e', code: 'KeyE' }));
     });
     
     btn.addEventListener('touchend', (e) => {
       e.preventDefault();
-      this.playerController.keys['Space'] = false;
+      this.playerController.keys['KeyE'] = false;
     });
   }
   
