@@ -4,12 +4,12 @@ export class UI {
     this.artifactsCollected = 0;
     this.totalArtifacts = 6;
     this.collectionMessages = [
-      "Ui, ui! Ist das Sisyphos heute gut gefüllt.",
-      "Hier steppt der Bär!",
-      "Ich muss mal aufs Klo. Ich komm gleich wieder.",
-      "Kippe?",
-      "Willst du ne Pommes?",
-      "Wäre es eigentlich voll cringe wenn ich dich jetzt küssen würde?"
+      "Ui, ui! Ist das Sisyphos heute gut gefüllt. - Buchstabe: B",
+      "Hier steppt der Bär! - Buchstabe: E",
+      "Ich muss mal aufs Klo. Ich komm gleich wieder. - Buchstabe: R",
+      "Kippe? - Buchstabe: L",
+      "Willst du ne Pommes? - Buchstabe: I",
+      "Wäre es eigentlich voll cringe wenn ich dich jetzt küssen würde? - Buchstabe: N"
     ];
   }
   
@@ -190,4 +190,5 @@ export class UI {
     }
   }
 }
+
 
