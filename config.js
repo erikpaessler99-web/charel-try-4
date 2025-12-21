@@ -12,7 +12,7 @@ export const CONFIG = {
   ROOM_HEIGHT: 15,
   
   // Avatar settings
-  AVATAR_COUNT: 800, // Packed club feel - 5x density
+  AVATAR_COUNT: 300, // Packed club feel - 5x density
   AVATAR_BOUNCE_SPEED: 1.8,
   AVATAR_SWAY_SPEED: 1.2,
   AVATAR_BOUNCE_HEIGHT: 0.15, // More subtle, realistic bounce
@@ -39,5 +39,6 @@ export const CONFIG = {
     0x0080ff  // Blue
   ]
 };
+
 
 
