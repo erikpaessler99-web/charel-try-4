@@ -38,7 +38,7 @@ export class UI {
     
     document.body.appendChild(uiContainer);
     
-    // NEW: Interaction Prompt (Floating text bubble)
+    // Interaction Prompt (Floating text bubble)
     const interactionPrompt = document.createElement('div');
     interactionPrompt.id = 'interaction-prompt';
     interactionPrompt.textContent = 'PRESS E TO ENTER PASSWORD';
@@ -83,6 +83,12 @@ export class UI {
         this.checkPassword();
       }
     });
+  }
+  
+  // Helper to check state
+  isPasswordModalOpen() {
+    const modal = document.getElementById('password-modal');
+    return modal && modal.style.display === 'flex';
   }
   
   showInteractionPrompt(show) {
