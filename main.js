@@ -243,7 +243,7 @@ class Game {
     
     this.ui.updateArtifactCount(collectedCount, CONFIG.ARTIFACT_COUNT);
     
-    // Show exit door when all artifacts collected
+    // Show exit door glow when all artifacts collected
     if (collectedCount === CONFIG.ARTIFACT_COUNT && !this.levelComplete) {
       this.levelComplete = true;
       this.room.showExitDoor();
@@ -271,8 +271,8 @@ class Game {
     this.artifacts = [];
     this.createArtifacts();
     
-    // Hide exit door
-    this.room.exitDoor.visible = false;
+    // UPDATED: Removed the line that hides the exit door
+    // this.room.exitDoor.visible = false; 
     
     // Reset state
     this.levelComplete = false;
