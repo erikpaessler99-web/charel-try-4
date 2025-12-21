@@ -1,6 +1,16 @@
 import * as THREE from 'three';
 import { CONFIG } from './config.js';
 
+// ========== PERSONALISE AVATAR FACE IMAGES HERE ==========
+const AVATAR_FACE_URLS = [
+  'https://media.licdn.com/dms/image/v2/D4E03AQEjU0dduci0Mg/profile-displayphoto-scale_200_200/B4EZkCEhjwHoAY-/0/1756676365480?e=2147483647&v=beta&t=8mhHj1CnvlELjK9ZjivJKNlj9q1Z9r0AiXEhI2Wcsv8',
+  'https://dpimap.org/about/_erik.jpg',
+  'https://media.licdn.com/dms/image/v2/C4E03AQGD2QO4BRFYuA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1612284690211?e=2147483647&v=beta&t=p-oeenFutpz9An-F97HXbfxmCMg8uv0vBLdNQI_TmTM',
+  'https://miro.medium.com/v2/resize:fit:2400/1*c9cbJDhDCz3UiP3z7SO0EA.jpeg',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTd6DiZPfJ2AVr4ur7M0NR9-GRd72iqiXxC0A&s'
+];
+// ==========================================================
+
 export class Avatar {
   constructor(scene, position, isDJ = false) {
     this.scene = scene;
@@ -47,6 +57,21 @@ export class Avatar {
     this.head.position.y = bodyHeight * 0.65 + headSize;
     this.head.castShadow = true;
     this.group.add(this.head);
+    
+    // Add face image (random from list)
+    if (!isDJ && AVATAR_FACE_URLS.length > 0) {
+      const faceUrl = AVATAR_FACE_URLS[Math.floor(Math.random() * AVATAR_FACE_URLS.length)];
+      const loader = new THREE.TextureLoader();
+      const faceTexture = loader.load(faceUrl);
+      const faceMaterial = new THREE.MeshBasicMaterial({ 
+        map: faceTexture, 
+        transparent: true 
+      });
+      const faceSize = headSize * 1.4;
+      const facePlate = new THREE.Mesh(new THREE.PlaneGeometry(faceSize, faceSize), faceMaterial);
+      facePlate.position.set(0, this.head.position.y, headSize + 0.05);
+      this.group.add(facePlate);
+    }
     
     // Legs
     const legHeight = bodyHeight * 0.45;
