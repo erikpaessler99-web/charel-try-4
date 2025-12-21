@@ -11,9 +11,9 @@ class Game {
     this.setupScene();
     this.setupCamera();
     this.setupRenderer();
-    this.setupPlayer(); // 1. Player setup
+    this.setupPlayer();
     this.setupWorld();
-    this.setupUI();     // 2. UI setup happens here
+    this.setupUI();
     
     this.clock = new THREE.Clock();
     this.gameTime = 0;
@@ -92,8 +92,18 @@ class Game {
   
   setupKeyListeners() {
     window.addEventListener('keydown', (e) => {
-      // FIX 1: IGNORE GAME INPUTS IF TYPING IN AN INPUT FIELD
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      // URGENT FIX: Check directly if we are in an input field OR if the modal is visible
+      const activeElement = document.activeElement;
+      const isInputActive = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA');
+      
+      // Check if modal is visible directly from DOM to be absolutely sure
+      const modal = document.getElementById('password-modal');
+      const isModalOpen = modal && modal.style.display === 'flex';
+
+      // If typing or modal is open, completely IGNORE the 'E' key
+      if (isInputActive || isModalOpen) {
+        return;
+      }
 
       if (e.key === 'e' || e.key === 'E') {
         this.handleDoorInteraction();
@@ -102,8 +112,8 @@ class Game {
   }
   
   handleDoorInteraction() {
-    // FIX 2: Check if UI exists and don't interact if modal is already open
-    if (!this.ui || this.ui.isPasswordModalOpen()) return;
+    // Double check: don't interact if UI says modal is open
+    if (this.ui && this.ui.isPasswordModalOpen()) return;
 
     // Check if near door
     if (this.room.checkExitCollision(this.player.position)) {
