@@ -90,21 +90,24 @@ class Game {
     this.setupKeyListeners();
   }
   
-  setupKeyListeners() {
+setupKeyListeners() {
     window.addEventListener('keydown', (e) => {
-      // URGENT FIX: Check directly if we are in an input field OR if the modal is visible
-      const activeElement = document.activeElement;
-      const isInputActive = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA');
-      
-      // Check if modal is visible directly from DOM to be absolutely sure
-      const modal = document.getElementById('password-modal');
-      const isModalOpen = modal && modal.style.display === 'flex';
+      // 1. Check if the event originated specifically from an input field
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        e.stopPropagation(); // Stop the event from reaching other listeners
+        return; // Allow the default typing action to happen
+      }
 
-      // If typing or modal is open, completely IGNORE the 'E' key
-      if (isInputActive || isModalOpen) {
+      // 2. Check if modal is visible (using getComputedStyle handles CSS classes better than style.display)
+      const modal = document.getElementById('password-modal');
+      const isModalOpen = modal && window.getComputedStyle(modal).display !== 'none';
+
+      // If modal is open, do not process game interaction keys
+      if (isModalOpen) {
         return;
       }
 
+      // 3. Handle Game Interaction
       if (e.key === 'e' || e.key === 'E') {
         this.handleDoorInteraction();
       }
@@ -349,3 +352,4 @@ new Game();
 setTimeout(() => {
   document.getElementById('instructions').style.display = 'none';
 }, 5000);
+
