@@ -308,7 +308,7 @@ setupKeyListeners() {
     // Reset instructions
     const instructions = document.getElementById('instructions');
     if (instructions) {
-      instructions.innerHTML = 'WASD to Move | Mouse to Look | Click to Lock Pointer<br>Collect all artifacts to unlock the exit';
+      instructions.innerHTML = 'WASD, Touchpad & Swipe, Maus zum Umgucken und Bewegen <br>Sammle alle Artefakte um Buchstaben für das Passwort zu erhalten!';
       instructions.style.background = 'rgba(0,0,0,0.7)';
       instructions.style.fontSize = '16px';
     }
@@ -352,4 +352,5 @@ new Game();
 setTimeout(() => {
   document.getElementById('instructions').style.display = 'none';
 }, 5000);
+
 
