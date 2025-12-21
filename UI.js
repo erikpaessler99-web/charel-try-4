@@ -126,7 +126,7 @@ export class UI {
     
     if (input === correctPassword) {
       // Success!
-      window.location.href = 'https://google.com';
+      window.location.href = 'https://erikpaessler99-web.github.io/charel-end/';
     } else {
       // Failure
       errorDiv.textContent = 'INCORRECT PASSWORD';
@@ -190,3 +190,4 @@ export class UI {
     }
   }
 }
+
