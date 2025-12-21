@@ -38,6 +38,12 @@ export class UI {
     
     document.body.appendChild(uiContainer);
     
+    // NEW: Interaction Prompt (Floating text bubble)
+    const interactionPrompt = document.createElement('div');
+    interactionPrompt.id = 'interaction-prompt';
+    interactionPrompt.textContent = 'PRESS E TO ENTER PASSWORD';
+    document.body.appendChild(interactionPrompt);
+    
     // Instructions
     const instructions = document.createElement('div');
     instructions.id = 'instructions';
@@ -79,12 +85,22 @@ export class UI {
     });
   }
   
+  showInteractionPrompt(show) {
+    const el = document.getElementById('interaction-prompt');
+    if (el) {
+      el.style.display = show ? 'block' : 'none';
+    }
+  }
+  
   showPasswordModal() {
     const modal = document.getElementById('password-modal');
     modal.style.display = 'flex';
     document.getElementById('password-input').value = '';
     document.getElementById('password-error').textContent = '';
     document.getElementById('password-input').focus();
+    
+    // Hide the prompt when modal is open
+    this.showInteractionPrompt(false);
     
     // Unlock pointer when modal opens
     if (document.pointerLockElement) {
@@ -168,4 +184,3 @@ export class UI {
     }
   }
 }
-
