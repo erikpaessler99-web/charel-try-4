@@ -99,8 +99,8 @@ class Game {
   }
   
   handleDoorInteraction() {
-    // Check if near door and all artifacts collected
-    if (this.levelComplete && this.room.checkExitCollision(this.player.position)) {
+    // Check if near door - can interact anytime (like game 1)
+    if (this.room.checkExitCollision(this.player.position)) {
       this.ui.showPasswordModal();
     }
   }
@@ -322,3 +322,7 @@ class Game {
 
 // Start the game
 new Game();
+// Hide instructions after 5 seconds
+setTimeout(() => {
+  document.getElementById('instructions').style.display = 'none';
+}, 5000);
