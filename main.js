@@ -11,9 +11,9 @@ class Game {
     this.setupScene();
     this.setupCamera();
     this.setupRenderer();
-    this.setupPlayer();
+    this.setupPlayer(); // 1. Player setup
     this.setupWorld();
-    this.setupUI();
+    this.setupUI();     // 2. UI setup happens here
     
     this.clock = new THREE.Clock();
     this.gameTime = 0;
@@ -92,6 +92,9 @@ class Game {
   
   setupKeyListeners() {
     window.addEventListener('keydown', (e) => {
+      // FIX 1: IGNORE GAME INPUTS IF TYPING IN AN INPUT FIELD
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
       if (e.key === 'e' || e.key === 'E') {
         this.handleDoorInteraction();
       }
@@ -99,7 +102,10 @@ class Game {
   }
   
   handleDoorInteraction() {
-    // Check if near door - can interact anytime (like game 1)
+    // FIX 2: Check if UI exists and don't interact if modal is already open
+    if (!this.ui || this.ui.isPasswordModalOpen()) return;
+
+    // Check if near door
     if (this.room.checkExitCollision(this.player.position)) {
       this.ui.showPasswordModal();
     }
@@ -251,12 +257,13 @@ class Game {
   }
   
   checkExitCollision() {
+    if (!this.ui) return;
+
     // Check proximity for UI feedback
     const nearDoor = this.room.checkExitCollision(this.player.position);
     
     // Only show "Press E" if near door AND the password modal isn't already open
-    const modal = document.getElementById('password-modal');
-    const isModalOpen = modal && modal.style.display === 'flex';
+    const isModalOpen = this.ui.isPasswordModalOpen();
     
     if (nearDoor && !isModalOpen) {
       this.ui.showInteractionPrompt(true);
