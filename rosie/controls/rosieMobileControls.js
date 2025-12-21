@@ -145,20 +145,34 @@ export class MobileControls {
     document.addEventListener('mouseup', handleEnd);
   }
   
-  setupInteractButton(btn) {
+setupInteractButton(btn) {
     btn.addEventListener('touchstart', (e) => {
       e.preventDefault();
       this.playerController.keys['KeyE'] = true;
-      // Dispatch E key event
-      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'e', code: 'KeyE' }));
+      
+      // FIX: Dispatch event directly to window and enable bubbling
+      // This ensures the main.js window listener catches it
+      window.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'e', 
+        code: 'KeyE',
+        bubbles: true,
+        cancelable: true
+      }));
     });
     
     btn.addEventListener('touchend', (e) => {
       e.preventDefault();
       this.playerController.keys['KeyE'] = false;
+      
+      // Optional: Dispatch keyup for completeness
+      window.dispatchEvent(new KeyboardEvent('keyup', { 
+        key: 'e', 
+        code: 'KeyE',
+        bubbles: true,
+        cancelable: true
+      }));
     });
-  }
-  
+  }  
   destroy() {
     const container = document.getElementById('mobile-game-controls');
     if (container) {
