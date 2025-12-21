@@ -251,9 +251,18 @@ class Game {
   }
   
   checkExitCollision() {
-    // Door interaction is now handled by E key press
-    // This method is kept for compatibility but doesn't auto-redirect
-    return false;
+    // Check proximity for UI feedback
+    const nearDoor = this.room.checkExitCollision(this.player.position);
+    
+    // Only show "Press E" if near door AND the password modal isn't already open
+    const modal = document.getElementById('password-modal');
+    const isModalOpen = modal && modal.style.display === 'flex';
+    
+    if (nearDoor && !isModalOpen) {
+      this.ui.showInteractionPrompt(true);
+    } else {
+      this.ui.showInteractionPrompt(false);
+    }
   }
   
   resetLevel() {
@@ -270,9 +279,6 @@ class Game {
     // Create new artifacts
     this.artifacts = [];
     this.createArtifacts();
-    
-    // UPDATED: Removed the line that hides the exit door
-    // this.room.exitDoor.visible = false; 
     
     // Reset state
     this.levelComplete = false;
