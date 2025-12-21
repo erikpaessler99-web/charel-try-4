@@ -47,7 +47,7 @@ export class UI {
     // Instructions
     const instructions = document.createElement('div');
     instructions.id = 'instructions';
-    instructions.innerHTML = 'WASD und Touchpad zum bewegen, Maus / Swipe um dich umzuschauen. <br>Sammel alle Artifakte ein!';
+    instructions.innerHTML = 'WASD und Touchpad zum bewegen, Maus / Swipe um dich umzuschauen. <br>Sammel alle Artifakte ein um Buchstaben für das Passwort zu erhalten!';
     document.body.appendChild(instructions);
     
     // Password modal
@@ -190,5 +190,6 @@ export class UI {
     }
   }
 }
+
 
 
