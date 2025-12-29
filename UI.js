@@ -170,7 +170,7 @@ export class UI {
       msgDiv.textContent = this.collectionMessages[index];
       msgDiv.style.display = 'block';
       
-      // Fade out after 2 seconds
+      // Fade out after 10 seconds
       setTimeout(() => {
         msgDiv.style.opacity = '0';
         setTimeout(() => {
@@ -190,7 +190,3 @@ export class UI {
     }
   }
 }
-
-
-
-
