@@ -215,6 +215,7 @@ class Game {
       );
       // Store the message index on the artifact
       artifact.messageIndex = i;
+      artifact.messageShown = false; // Track if message was shown
       this.artifacts.push(artifact);
     }
   }
@@ -258,9 +259,13 @@ class Game {
       if (artifact.collected) {
         collectedCount++;
       } else if (artifact.checkCollision(this.player.position)) {
+        // This artifact is being collected RIGHT NOW
+        // Only show message if we haven't shown it yet
+        if (!artifact.messageShown) {
+          this.ui.showCollectionMessage(artifact.messageIndex);
+          artifact.messageShown = true;
+        }
         collectedCount++;
-        // Show collection message using the artifact's stored messageIndex
-        this.ui.showCollectionMessage(artifact.messageIndex);
       }
     }
     
