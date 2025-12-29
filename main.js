@@ -213,6 +213,8 @@ class Game {
         this.scene, 
         new THREE.Vector3(x, y, z)
       );
+      // Store the message index on the artifact
+      artifact.messageIndex = i;
       this.artifacts.push(artifact);
     }
   }
@@ -257,8 +259,8 @@ class Game {
         collectedCount++;
       } else if (artifact.checkCollision(this.player.position)) {
         collectedCount++;
-        // Show collection message using artifact index (not collected count)
-        this.ui.showCollectionMessage(i);
+        // Show collection message using the artifact's stored messageIndex
+        this.ui.showCollectionMessage(artifact.messageIndex);
       }
     }
     
