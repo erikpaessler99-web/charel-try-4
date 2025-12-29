@@ -90,7 +90,7 @@ class Game {
     this.setupKeyListeners();
   }
   
-setupKeyListeners() {
+  setupKeyListeners() {
     window.addEventListener('keydown', (e) => {
       // 1. Check if the event originated specifically from an input field
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
@@ -250,13 +250,15 @@ setupKeyListeners() {
   checkArtifactCollection() {
     let collectedCount = 0;
     
-    for (const artifact of this.artifacts) {
+    // Use indexed loop to get artifact index for correct message
+    for (let i = 0; i < this.artifacts.length; i++) {
+      const artifact = this.artifacts[i];
       if (artifact.collected) {
         collectedCount++;
       } else if (artifact.checkCollision(this.player.position)) {
         collectedCount++;
-        // Show collection message
-        this.ui.showCollectionMessage(collectedCount - 1);
+        // Show collection message using artifact index (not collected count)
+        this.ui.showCollectionMessage(i);
       }
     }
     
@@ -348,9 +350,11 @@ setupKeyListeners() {
 
 // Start the game
 new Game();
+
 // Hide instructions after 5 seconds
 setTimeout(() => {
-  document.getElementById('instructions').style.display = 'none';
+  const instructions = document.getElementById('instructions');
+  if (instructions) {
+    instructions.style.display = 'none';
+  }
 }, 5000);
-
-
