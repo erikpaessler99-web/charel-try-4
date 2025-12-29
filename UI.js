@@ -177,7 +177,7 @@ export class UI {
           msgDiv.style.display = 'none';
           msgDiv.style.opacity = '1';
         }, 500);
-      }, 2000);
+      }, 10000);
     }
   }
   
@@ -190,6 +190,7 @@ export class UI {
     }
   }
 }
+
 
 
 
