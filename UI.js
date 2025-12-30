@@ -5,6 +5,7 @@ export class UI {
     this.totalArtifacts = 6;
     this.messageTimeout = null;
     this.messageFadeTimeout = null;
+    this.currentMessageIndex = null;
     this.collectionMessages = [
       "Ui, ui! Ist das Sisyphos heute gut gefüllt. - Buchstabe: B",
       "Hier steppt der Bär! - Buchstabe: E",
@@ -169,9 +170,18 @@ export class UI {
   showCollectionMessage(index) {
     const msgDiv = document.getElementById('collection-message');
     if (msgDiv && index < this.collectionMessages.length) {
+      // Prevent showing the same message if it's already showing
+      if (this.currentMessageIndex === index) {
+        return;
+      }
+      
+      this.currentMessageIndex = index;
+      
       // Cancel any existing timeout
       if (this.messageTimeout) {
         clearTimeout(this.messageTimeout);
+      }
+      if (this.messageFadeTimeout) {
         clearTimeout(this.messageFadeTimeout);
       }
       
@@ -186,6 +196,7 @@ export class UI {
         this.messageFadeTimeout = setTimeout(() => {
           msgDiv.style.display = 'none';
           msgDiv.style.opacity = '1';
+          this.currentMessageIndex = null;
         }, 500);
       }, 20000);
     }
